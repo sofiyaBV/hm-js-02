@@ -4,28 +4,52 @@
 function Student(name, surname) {
   this.name = name;
   this.surname = surname;
-  this.grades = [];
+  this.subjects = {};
 }
 
-Student.prototype.addGrade = function (grade) {
-  if (grade > 0) {
-    this.grades.push(grade);
+Student.prototype.addGrade = function (subject, grade) {
+  if (!this.subjects[subject]) {
+    this.subjects[subject] = [];
+  }
+  if (grade > 0 && grade <= 12) {
+    this.subjects[subject].push(grade);
+    return `Оцінку по предмету ${subject} додано`;
+  } else {
+    return "Оцінка має бути в діапазоні від 1 до 12.";
   }
 };
 
-Student.prototype.calculateAverage = function () {
-  if (this.grades.length === 0) {
-    return 0;
+Student.prototype.calculateSubjectAverage = function (subject) {
+  const subjectGrades = this.subjects[subject];
+  if (!subjectGrades || subjectGrades.length === 0) {
+    return `Студент ще не отримав оцінок по предмету ${subject}.`;
   }
-  const sum = this.grades.reduce((acc, grade) => acc + grade, 0);
-  return sum / this.grades.length;
+  const sum = subjectGrades.reduce((acc, grade) => acc + grade, 0);
+  return sum / subjectGrades.length;
 };
-const student2 = new Student("John", "Doe");
-student2.addGrade(10);
-student2.addGrade(10);
-student2.addGrade(1);
 
-console.log(`Ім'я: ${student2.name}`);
-console.log(`Прізвище: ${student2.surname}`);
-console.log(`Оцінки: ${student2.grades.join(", ")}`);
-console.log(`Середній бал: ${student2.calculateAverage()}`);
+Student.prototype.displayStudentInfo = function () {
+  let output = `Ім'я: ${this.name}\n`;
+  output += `Прізвище: ${this.surname}\n`;
+
+  Object.keys(this.subjects).forEach((subject) => {
+    const grades = this.subjects[subject];
+    const average = this.calculateSubjectAverage(subject);
+    output += `Оцінки по ${subject}: ${grades.join(", ")}\n`;
+    output += `Середній бал по ${subject}: ${average}\n`;
+  });
+
+  return output;
+};
+
+const student = new Student("Софія", "Бондар");
+student.addGrade("Математика", 9);
+student.addGrade("Математика", 8);
+student.addGrade("Математика", 9);
+student.addGrade("Фізика", 8);
+student.addGrade("Фізика", 9);
+student.addGrade("Хімія", 7);
+student.addGrade("Біологія", 7);
+student.addGrade("Біологія", 7);
+
+console.log(student.displayStudentInfo());

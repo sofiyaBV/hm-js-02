@@ -23,11 +23,10 @@ let books = [
   },
 ];
 
-booksIssuedAfterNYear = function (books, myYear) {
+const booksIssuedAfterNYear = function (books, myYear) {
   let recentBooks = books.filter(({ year }) => year > myYear);
   recentBooks.sort((a, b) => a.year - b.year);
   let title = recentBooks.map(({ title }) => title);
-  return title;
+  return `Книги що булі відано після ${myYear} року : ${title}`;
 };
-
 console.log(booksIssuedAfterNYear(books, 2000));
